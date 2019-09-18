@@ -273,7 +273,6 @@ def str2float(valor):
 
 # Se crean los valores numéricos con los datos del METAR
 fecha = str2date()
-dirc = str2float(dirc)
 
 def definir_rango_fechas():
     """
@@ -293,11 +292,16 @@ def definir_rango_fechas():
 
 def extraer_subset():
     fechas = definir_rango_fechas()
-    subset = data[(data['ANIO'] >= float(fechas[0].year)) & (data['ANIO'] <= float(fechas[-1].year))]
-    return subset
+    subset = data[(data['MES'] == fechas[0].month) | (data['MES'] == fechas[-1].month)]
+    subset1 = subset[subset['DIA'] == fechas[0].day]
+    for d in fechas[1:]:
+        subset1 = pd.concat([subset1, subset[subset['DIA'] == d.day]], axis=0)
+    subset1 = subset1[subset1['HORA'] == fecha.hour]
+    return subset1
 
 subset = extraer_subset()
-print(subset.head())
+print("Shape del subset: {}".format(subset.shape))
+print(subset.head(20))
 
 
 log.close()

@@ -4,3 +4,4 @@
 {}... Se escribe correctamente el METAR más reciente en el archivo 'texto_web.txt'.
 {}... Se lee correctamente el METAR más reciente desde el archivo 'texto_web.txt'.
 {}... Se crea el objeto METAR, el cual servirá de condición inicial.
+{}... Se extraen los datos del objeto metar usando sus métodos públicos correctamente.
