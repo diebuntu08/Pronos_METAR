@@ -290,7 +290,7 @@ def definir_rango_fechas():
             lista.append(fecha + timedelta(days=d))
     return lista
 
-def extraer_subset():
+def extraer_subset_fechas():
     fechas = definir_rango_fechas()
     subset = data[(data['MES'] == fechas[0].month) | (data['MES'] == fechas[-1].month)]
     subset1 = subset[subset['DIA'] == fechas[0].day]
@@ -299,9 +299,13 @@ def extraer_subset():
     subset1 = subset1[subset1['HORA'] == fecha.hour]
     return subset1
 
-subset = extraer_subset()
+subset = extraer_subset_fechas()
 print("Shape del subset: {}".format(subset.shape))
 print(subset.head(20))
+
+
+presion = str2float(presion) / 100
+
 
 
 log.close()
