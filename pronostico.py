@@ -15,7 +15,7 @@ import numpy as numpy
 import requests
 import re
 from bs4 import BeautifulSoup
-from datetime import datetime
+from datetime import datetime, timedelta
 
 log = open('log.txt', 'w')
 
@@ -240,10 +240,12 @@ fecha = metar_obj.extraer_fecha()
 dirc, vel, raf = metar_obj.extraer_viento()
 T, Tr = metar_obj.extraer_temperaturas()
 presion = metar_obj.extraer_presion()
-print("Fecha: {}".format(fecha))
-print("Direccion: {}\nVelocidad: {}\nRafagas: {}".format(dirc, vel, raf))
-print("Temperatura: {}\nTemperatura rocío: {}".format(T, Tr))
-print("Presion: {}".format(presion))
+mensaje = "{}... Se extraen los datos del objeto metar usando sus métodos públicos correctamente."
+registro_de_actividad(mensaje)
+#print("Fecha: {}".format(fecha))
+#print("Direccion: {}\nVelocidad: {}\nRafagas: {}".format(dirc, vel, raf))
+#print("Temperatura: {}\nTemperatura rocío: {}".format(T, Tr))
+#print("Presion: {}".format(presion))
 
 def str2date():
     """
@@ -269,10 +271,33 @@ def str2float(valor):
         return float(valor)
     return valor
 
+# Se crean los valores numéricos con los datos del METAR
 fecha = str2date()
-print(fecha.year, type(fecha.year))   
 dirc = str2float(dirc)
-print(dirc, type(dirc))     
+
+def definir_rango_fechas():
+    """
+    Esta función define el rango de fechas para buscar dentro de la data de los METAR.
+    ------------------------
+    No recibe ningún parámetro.
+    ------------------------
+    Retorna una lista con objetos de tipo fecha.
+    """
+    lista = []
+    for d in range(-7, 8):
+        if d < 0:
+            lista.append(fecha - timedelta(days=abs(d)))
+        else:
+            lista.append(fecha + timedelta(days=d))
+    return lista
+
+def extraer_subset():
+    fechas = definir_rango_fechas()
+    subset = data[(data['ANIO'] >= float(fechas[0].year)) & (data['ANIO'] <= float(fechas[-1].year))]
+    return subset
+
+subset = extraer_subset()
+print(subset.head())
 
 
 log.close()
