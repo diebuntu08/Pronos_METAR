@@ -313,13 +313,20 @@ print("Shape del subset: {}".format(subset.shape))
 
 def extraer_datos_pronostico(subset, columna):
     filas = subset.index.tolist()
-    lista_horas = []
+    listas_por_hora = []
     for f in filas:
         lista = []
         for h in range(1, 13):
             lista.append(data[columna][f+h])
-        lista_horas.append(lista)
-    return lista_horas  
+        listas_por_hora.append(lista)
+    return listas_por_hora
+
+def promedios(listas):
+    lista = []
+    for l in listas:
+        arr = np.array(l)
+        lista.append(arr.mean())
+    return lista
 
 def extraer_subset_valor(columna, maximo, minimo):
     """
@@ -333,7 +340,8 @@ def extraer_subset_valor(columna, maximo, minimo):
     Retorna el subset extraído.
     """
     subset1 = subset[(subset[columna] >= maximo) & (subset[columna] <= minimo)]
-    return subset1
+    listas_por_hora = extraer_datos_pronostico(subset1, columna)
+    return promedios(listas_por_hora)
 
 presion = str2float(presion) / 100
 subset_presiones = extraer_subset_valor("QNH", presion-0.02, presion+0.02)
