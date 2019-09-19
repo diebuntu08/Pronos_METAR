@@ -11,7 +11,7 @@ __email__ = "dgarro@imn.ac.cr"
 __status__ = "Developer"
 
 import pandas as pd
-import numpy as numpy
+import numpy as np
 import requests
 import re
 from bs4 import BeautifulSoup
@@ -323,9 +323,16 @@ def extraer_datos_pronostico(subset, columna):
 
 def promedios(listas):
     lista = []
-    for l in listas:
-        arr = np.array(l)
-        lista.append(arr.mean())
+    for i in range(len(listas[0])):
+        suma = 0
+        contador = 0
+        for l in listas:
+            valor = l[i]
+            if str(valor) == 'nan' or valor == 999.0:
+                contador += 1
+                continue
+            suma += valor
+        lista.append(suma / (len(listas) - contador))
     return lista
 
 def extraer_subset_valor(columna, maximo, minimo):
@@ -341,14 +348,13 @@ def extraer_subset_valor(columna, maximo, minimo):
     """
     subset1 = subset[(subset[columna] >= maximo) & (subset[columna] <= minimo)]
     listas_por_hora = extraer_datos_pronostico(subset1, columna)
+    print(listas_por_hora)
     return promedios(listas_por_hora)
 
 presion = str2float(presion) / 100
-subset_presiones = extraer_subset_valor("QNH", presion-0.02, presion+0.02)
-listas_presiones = extraer_datos_pronostico(subset_presiones, "QNH")
-print(subset_presiones.head(10))
-print(subset_presiones.shape)
-print("Promedio de la presion: {:.2f}".format(subset_presiones["QNH"].mean()))
+pronostico_presion = extraer_subset_valor("QNH", presion-0.02, presion+0.02)
+for valor in pronostico_presion:
+    print("Promedio {}: {:.2f}".format(pronostico_presion.index(valor), valor))
 
 
 
