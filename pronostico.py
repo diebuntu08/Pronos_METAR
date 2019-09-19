@@ -301,10 +301,28 @@ def extraer_subset_fechas():
 
 subset = extraer_subset_fechas()
 print("Shape del subset: {}".format(subset.shape))
-print(subset.head(20))
+#print(subset.head(20))
+#print(subset.tail(20))
 
+def extraer_subset_valor(columna, maximo, minimo):
+    """
+    Esta función extrae un subset de acuerdo a un rango de valores máximo y mínimo.
+    ----------------------------
+    Recibe tres parámetros:
+    * columna: string, nombre de la columna correspondiente al rango de valores que quiere comparar.
+    * maximo: int o float, valor máximo para la comparación.
+    * mínimo: int o float, valor mínimo para la comparación.
+    ----------------------------
+    Retorna el subset extraído.
+    """
+    subset1 = subset[(subset[columna] >= maximo) & (subset[columna] <= minimo)]
+    return subset1
 
 presion = str2float(presion) / 100
+subset_presiones = extraer_subset_valor("QNH", presion-0.02, presion+0.02)
+print(subset_presiones.head(10))
+print(subset_presiones.shape)
+print("Promedio de la presion: {:.2f}".format(subset_presiones["QNH"].mean()))
 
 
 
