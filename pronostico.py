@@ -291,6 +291,13 @@ def definir_rango_fechas():
     return lista
 
 def extraer_subset_fechas():
+    """
+    Esta función extrae un subset por rango de fechas.
+    -------------------------
+    No recibe ningún parámetro.
+    -------------------------
+    Retorna el subset de acuerdo al rango de fechas deseado.
+    """
     fechas = definir_rango_fechas()
     subset = data[(data['MES'] == fechas[0].month) | (data['MES'] == fechas[-1].month)]
     subset1 = subset[subset['DIA'] == fechas[0].day]
@@ -303,6 +310,16 @@ subset = extraer_subset_fechas()
 print("Shape del subset: {}".format(subset.shape))
 #print(subset.head(20))
 #print(subset.tail(20))
+
+def extraer_datos_pronostico(subset, columna):
+    filas = subset.index.tolist()
+    lista_horas = []
+    for f in filas:
+        lista = []
+        for h in range(1, 13):
+            lista.append(data[columna][f+h])
+        lista_horas.append(lista)
+    return lista_horas  
 
 def extraer_subset_valor(columna, maximo, minimo):
     """
@@ -320,6 +337,7 @@ def extraer_subset_valor(columna, maximo, minimo):
 
 presion = str2float(presion) / 100
 subset_presiones = extraer_subset_valor("QNH", presion-0.02, presion+0.02)
+listas_presiones = extraer_datos_pronostico(subset_presiones, "QNH")
 print(subset_presiones.head(10))
 print(subset_presiones.shape)
 print("Promedio de la presion: {:.2f}".format(subset_presiones["QNH"].mean()))
