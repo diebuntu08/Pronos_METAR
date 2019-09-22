@@ -335,24 +335,24 @@ def promedios(listas):
         lista.append(suma / (len(listas) - contador))
     return lista
 
-def extraer_subset_valor(columna, maximo, minimo):
+def extraer_subset_valor(columna, valor, delta):
     """
     Esta función extrae un subset de acuerdo a un rango de valores máximo y mínimo.
     ----------------------------
     Recibe tres parámetros:
     * columna: string, nombre de la columna correspondiente al rango de valores que quiere comparar.
-    * maximo: int o float, valor máximo para la comparación.
-    * mínimo: int o float, valor mínimo para la comparación.
+    * valor: int o float, valor para la comparación.
+    * delta: int o float, valor para generar el rango de la comparación.
     ----------------------------
     Retorna el subset extraído.
     """
-    subset1 = subset[(subset[columna] >= maximo) & (subset[columna] <= minimo)]
+    subset1 = subset[(subset[columna] >= (valor-delta)) & (subset[columna] <= (valor+delta))]
     listas_por_hora = extraer_datos_pronostico(subset1, columna)
     print(listas_por_hora)
     return promedios(listas_por_hora)
 
 presion = str2float(presion) / 100
-pronostico_presion = extraer_subset_valor("QNH", presion-0.02, presion+0.02)
+pronostico_presion = extraer_subset_valor("QNH", presion, 0.02)
 for valor in pronostico_presion:
     print("Promedio {}: {:.2f}".format(pronostico_presion.index(valor), valor))
 
