@@ -386,6 +386,8 @@ def pronostico(variable, valor, delta):
         valor = str2float(valor)
     elif valor == '':
         return [''] * 12
+    if variable == "QNH":
+        valor = valor / 100
     return extraer_subset_valor(variable, valor, delta)
 
 # Pronóstico para la variable QNH
