@@ -351,10 +351,35 @@ def extraer_subset_valor(columna, valor, delta):
     print(listas_por_hora)
     return promedios(listas_por_hora)
 
-presion = str2float(presion) / 100
-pronostico_presion = extraer_subset_valor("QNH", presion, 0.02)
-for valor in pronostico_presion:
-    print("Promedio {}: {:.2f}".format(pronostico_presion.index(valor), valor))
+def pronostico(variable, valor, delta):
+    """
+    Esta función lleva a cabo el pronóstico para la variable especificada.
+    ----------------------------
+    Recibe tres parámetros:
+    * variable: string, la variable que se quiere pronosticar.
+    * valor: int o float, el valor inicial de la variable.
+    * delta: int o float, el valor para generar el rango de búsqueda para las coincidencias.
+    ----------------------------
+    Retorna los valores pronosticados para las próximas 12 horas como una lista.
+    """
+    if valor == 999.:
+        valor = 180.
+    elif valor.isdigit():
+        valor = str2float(valor)
+    elif valor == '':
+        return [''] * 12
+    return extraer_subset_valor(variable, valor, delta)
+
+
+# Pronóstico para la variable QNH
+QNH = str2float(presion) / 100
+pronostico_QNH = extraer_subset_valor("QNH", QNH, 0.02)
+for valor in pronostico_QNH:
+    print("Promedio {}: {:.2f}".format(pronostico_QNH.index(valor), valor))
+
+# Pronóstico para la variable Dirección del viento
+DIR = str2float(dirc)
+pronostico_DIR = extraer_subset_valor("DIR", DIR, delta)
 
 
 

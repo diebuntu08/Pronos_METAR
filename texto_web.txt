@@ -1,7 +1,7 @@
 <pre>
 ##########################################################
-# Consulta realizada a 22/09/2019 21:54:39 UTC
-# Periodo: desde 22/09/2019 21:00  a 22/09/2019 21:05  UTC
+# Consulta realizada a 22/09/2019 22:02:51 UTC
+# Periodo: desde 22/09/2019 22:00  a 22/09/2019 22:05  UTC
 ##########################################################
 
 ##########################################################
@@ -10,10 +10,10 @@
 # Latitud 10-00N. Longitud 084-13W. Altitud 920 m.
 ##########################################################
 
-###################################
-#  METAR/SPECI de MROC
-###################################
-201909222100 METAR MROC 222100Z 08004KT 9999 FEW015 BKN100 22/20 A3000
-                        NOSIG=
+# No hay METAR/SPECI de MROC en el periodo solicitado.
+
+# No hay TAF CORTOS de MROC en el periodo solicitado.
+
+# No hay TAF LARGOS de MROC en el periodo solicitado.
 
 </pre>
