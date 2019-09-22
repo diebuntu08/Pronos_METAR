@@ -312,6 +312,16 @@ print("Shape del subset: {}".format(subset.shape))
 #print(subset.tail(20))
 
 def extraer_datos_pronostico(subset, columna):
+    """
+    Esta función extrae los datos para realizar los pronósticos y los acumula en listas por hora, para las próximas
+    12 horas.
+    ------------------------------
+    Recibe dos parámetros:
+    * subset: pd.DataFrame, el subset correspondiente a las coincidencias de la condición incicial por fecha.
+    * columna: string, la columna de o variable que se quiere pronosticar.
+    ------------------------------
+    Retorna una lista con listas de valores acomodados por hora para realizar los pronósticos.
+    """
     filas = subset.index.tolist()
     listas_por_hora = []
     for f in filas:
@@ -322,6 +332,14 @@ def extraer_datos_pronostico(subset, columna):
     return listas_por_hora
 
 def promedios(listas):
+    """
+    Esta función calcula los promedios para cada hora.
+    -----------------------------
+    Recibe un parámetro:
+    * listas: list, la lista que retorna la función extraer_datos_pronostico(subset, column).
+    -----------------------------
+    Retorna otra lista con los promedios calculados para cada hora.
+    """
     lista = []
     for i in range(len(listas[0])):
         suma = 0
@@ -369,7 +387,6 @@ def pronostico(variable, valor, delta):
     elif valor == '':
         return [''] * 12
     return extraer_subset_valor(variable, valor, delta)
-
 
 # Pronóstico para la variable QNH
 QNH = str2float(presion) / 100
