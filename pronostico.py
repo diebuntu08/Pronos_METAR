@@ -148,6 +148,7 @@ if metar != '':
 else:
     mensaje = "{}... No se pudo acceder al METAR"
     registro_de_actividad(mensaje + '\n')
+    exit()
 
 class METAR(object):
     """
@@ -410,11 +411,10 @@ for valor in pronostico_DIR:
     entero = redondear_entero(valor)
     print("Promedio DIR {}: {:.1f}".format(pronostico_DIR.index(valor), entero))
 
-# Pronóstico para la variable Dirección del viento
-pronostico_TEMP = pronostico("DIR", dirc, 20.)
-for valor in pronostico_DIR:
-    entero = redondear_entero(valor)
-    print("Promedio DIR {}: {:.1f}".format(pronostico_DIR.index(valor), entero))
+# Pronóstico para la variable Temperatura
+pronostico_TEMP = pronostico("TEMP", T, 1.)
+for valor in pronostico_TEMP:
+    print("Promedio DIR {}: {:.1f}".format(pronostico_TEMP.index(valor), valor))
 
 
 log.close()
