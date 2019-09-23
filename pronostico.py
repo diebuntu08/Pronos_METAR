@@ -385,21 +385,36 @@ def pronostico(variable, valor, delta):
     elif valor.isdigit():
         valor = str2float(valor)
     elif valor == '':
-        return [''] * 12
+        return ['///'] * 12
     if variable == "QNH":
         valor = valor / 100
     return extraer_subset_valor(variable, valor, delta)
 
 # Pronóstico para la variable QNH
-QNH = str2float(presion) / 100
-pronostico_QNH = extraer_subset_valor("QNH", QNH, 0.02)
+pronostico_QNH = pronostico("QNH", presion, 0.02)
 for valor in pronostico_QNH:
-    print("Promedio {}: {:.2f}".format(pronostico_QNH.index(valor), valor))
+    print("Promedio QNH {}: {:.2f}".format(pronostico_QNH.index(valor), valor))
+
+def redondear_entero(valor):
+    valor = round(valor, 0)
+    residuo = float(str(valor).zfill(5)[-3:])
+    if residuo >= 5:
+        valor += 10 - residuo
+    else:
+        valor -= residuo
+    return valor
 
 # Pronóstico para la variable Dirección del viento
-DIR = str2float(dirc)
-pronostico_DIR = extraer_subset_valor("DIR", DIR, delta)
+pronostico_DIR = pronostico("DIR", dirc, 20.)
+for valor in pronostico_DIR:
+    entero = redondear_entero(valor)
+    print("Promedio DIR {}: {:.1f}".format(pronostico_DIR.index(valor), entero))
 
+# Pronóstico para la variable Dirección del viento
+pronostico_TEMP = pronostico("DIR", dirc, 20.)
+for valor in pronostico_DIR:
+    entero = redondear_entero(valor)
+    print("Promedio DIR {}: {:.1f}".format(pronostico_DIR.index(valor), entero))
 
 
 log.close()
