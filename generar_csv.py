@@ -142,6 +142,8 @@ separador = ","
 for anio in anios:
 	f1 = open("files/" + str(anio) + '.txt', 'r')
 	for linea in f1:
+		if linea[10:12] != '00':
+			continue
 		metar = Metar(linea)
 		datos = metar.return_data()
 		#if not "-9999" in datos:
