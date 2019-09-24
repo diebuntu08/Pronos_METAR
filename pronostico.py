@@ -368,7 +368,10 @@ def extraer_subset_valor(columna, valor, delta):
     subset1 = subset[(subset[columna] >= (valor-delta)) & (subset[columna] <= (valor+delta))]
     listas_por_hora = extraer_datos_pronostico(subset1, columna)
     #print(listas_por_hora)
-    return promedios(listas_por_hora)
+    if len(listas_por_hora) > 0:
+        return promedios(listas_por_hora)
+    else:
+        return([0] * 12)
 
 def redondear_entero(valor):
     """
@@ -414,20 +417,33 @@ def pronostico(variable, valor, delta):
         return pronos_redondeado
     return pronos
 
+# En la lista 'datos' se almacenarán todos los pronósticos para el despliegue a pantalla y a archivo
+datos = []
+
 # Pronóstico para la variable QNH
 pronostico_QNH = pronostico("QNH", presion, 0.02)
-for valor in pronostico_QNH:
-    print("Promedio QNH {}: {:.2f}".format(pronostico_QNH.index(valor), valor))
-
-# Pronóstico para la variable Dirección del viento
-pronostico_DIR = pronostico("DIR", dirc, 20.)
-for valor in pronostico_DIR:
-    print("Promedio DIR {}: {:.1f}".format(pronostico_DIR.index(valor), valor))
+datos.append(pronostico_QNH)
 
 # Pronóstico para la variable Temperatura
 pronostico_TEMP = pronostico("TEMP", T, 1.)
-for valor in pronostico_TEMP:
-    print("Promedio DIR {}: {:.1f}".format(pronostico_TEMP.index(valor), valor))
+datos.append(pronostico_TEMP)
 
+# Pronóstico para la variable Dirección del viento
+pronostico_DIR = pronostico("DIR", dirc, 20.)
+datos.append(pronostico_DIR)
+
+# Pronóstico para la variable Velocidad del viento
+pronostico_MAG = pronostico("MAG", vel, 4.)
+datos.append(pronostico_MAG)
+
+# Pronóstico para la variable Ráfagas de viento
+if raf == '0':
+    pronostico_RAF = pronostico("RAF", str(int(vel)+10), 4.)
+else:
+    pronostico_RAF = pronostico("RAF", raf, 4.)
+datos.append(pronostico_RAF)
+
+for i in range(12):
+    print("{:.2f} {:.1f} {:.0f} {:.1f} {}".format(datos[0][i], datos[1][i], datos[2][i], datos[3][i], datos[4][i]))
 
 log.close()
