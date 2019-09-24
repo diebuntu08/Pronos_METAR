@@ -420,6 +420,20 @@ def pronostico(variable, valor, delta):
 # En la lista 'datos' se almacenarán todos los pronósticos para el despliegue a pantalla y a archivo
 datos = []
 
+def horas_pronosticadas():
+    """
+    Esta función genera una lista con las horas de pronóstico.
+    ----------------------------
+    No recibe ningún parámetro.
+    ----------------------------
+    Retorna las horas de pronóstico como una lista.
+    """
+    lista = []
+    for i in range(1, 13):
+        nueva_fecha = fecha + timedelta(hours=1)
+        lista.append(nueva_fecha.hour)
+    return lista
+
 # Pronóstico para la variable QNH
 pronostico_QNH = pronostico("QNH", presion, 0.02)
 datos.append(pronostico_QNH)
