@@ -406,7 +406,13 @@ def pronostico(variable, valor, delta):
         return ['///'] * 12
     if variable == "QNH":
         valor = valor / 100
-    return extraer_subset_valor(variable, valor, delta)
+    pronos = extraer_subset_valor(variable, valor, delta)
+    if variable == "DIR":
+        pronos_redondeado = []
+        for valor in pronos:
+            pronos_redondeado.append(redondear_entero(valor))
+        return pronos_redondeado
+    return pronos
 
 # Pronóstico para la variable QNH
 pronostico_QNH = pronostico("QNH", presion, 0.02)
@@ -416,8 +422,7 @@ for valor in pronostico_QNH:
 # Pronóstico para la variable Dirección del viento
 pronostico_DIR = pronostico("DIR", dirc, 20.)
 for valor in pronostico_DIR:
-    entero = redondear_entero(valor)
-    print("Promedio DIR {}: {:.1f}".format(pronostico_DIR.index(valor), entero))
+    print("Promedio DIR {}: {:.1f}".format(pronostico_DIR.index(valor), valor))
 
 # Pronóstico para la variable Temperatura
 pronostico_TEMP = pronostico("TEMP", T, 1.)
