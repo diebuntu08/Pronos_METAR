@@ -430,9 +430,11 @@ def horas_pronosticadas():
     """
     lista = []
     for i in range(1, 13):
-        nueva_fecha = fecha + timedelta(hours=1)
+        nueva_fecha = fecha + timedelta(hours=i)
         lista.append(nueva_fecha.hour)
     return lista
+
+datos.append(horas_pronosticadas())
 
 # Pronóstico para la variable QNH
 pronostico_QNH = pronostico("QNH", presion, 0.02)
@@ -458,6 +460,12 @@ else:
 datos.append(pronostico_RAF)
 
 for i in range(12):
-    print("{:.2f} {:.1f} {:.0f} {:.1f} {}".format(datos[0][i], datos[1][i], datos[2][i], datos[3][i], datos[4][i]))
+    HORA = str(datos[0][i]).zfill(2)
+    QNH = round(datos[1][i], 2)
+    TEMP = round(datos[2][i], 1)
+    DIR = int(datos[3][i])
+    MAG = int(round(datos[4][i], 0))
+    RAF = int(round(datos[5][i], 0))
+    print("{} {:3.2f} {:3.1f} {:3d} {:3d} {:3d}".format(HORA, QNH, TEMP, DIR, MAG, RAF))
 
 log.close()
