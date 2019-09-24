@@ -367,8 +367,25 @@ def extraer_subset_valor(columna, valor, delta):
     """
     subset1 = subset[(subset[columna] >= (valor-delta)) & (subset[columna] <= (valor+delta))]
     listas_por_hora = extraer_datos_pronostico(subset1, columna)
-    print(listas_por_hora)
+    #print(listas_por_hora)
     return promedios(listas_por_hora)
+
+def redondear_entero(valor):
+    """
+    Esta función redondea un número a la decena más cercana.
+    ----------------------------
+    Recibe un parámetro:
+    * valor: int o float, valor a ser redondeado.
+    ----------------------------
+    Retorna el valor redondeado.
+    """
+    valor = round(valor, 0)
+    residuo = float(str(valor).zfill(5)[-3:])
+    if residuo >= 5:
+        valor += 10 - residuo
+    else:
+        valor -= residuo
+    return valor
 
 def pronostico(variable, valor, delta):
     """
@@ -381,7 +398,7 @@ def pronostico(variable, valor, delta):
     ----------------------------
     Retorna los valores pronosticados para las próximas 12 horas como una lista.
     """
-    if valor == 999.:
+    if valor == 'VRB':
         valor = 180.
     elif valor.isdigit():
         valor = str2float(valor)
@@ -395,15 +412,6 @@ def pronostico(variable, valor, delta):
 pronostico_QNH = pronostico("QNH", presion, 0.02)
 for valor in pronostico_QNH:
     print("Promedio QNH {}: {:.2f}".format(pronostico_QNH.index(valor), valor))
-
-def redondear_entero(valor):
-    valor = round(valor, 0)
-    residuo = float(str(valor).zfill(5)[-3:])
-    if residuo >= 5:
-        valor += 10 - residuo
-    else:
-        valor -= residuo
-    return valor
 
 # Pronóstico para la variable Dirección del viento
 pronostico_DIR = pronostico("DIR", dirc, 20.)
