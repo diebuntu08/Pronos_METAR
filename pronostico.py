@@ -299,9 +299,9 @@ def extraer_subset_fechas():
     """
     fechas = definir_rango_fechas()
     subset = data[(data['MES'] == fechas[0].month) | (data['MES'] == fechas[-1].month)]
-    subset1 = subset[subset['DIA'] == fechas[0].day]
+    subset1 = subset[(subset['MES'] == fechas[0].month) & (subset['DIA'] == fechas[0].day)]
     for d in fechas[1:]:
-        subset1 = pd.concat([subset1, subset[subset['DIA'] == d.day]], axis=0)
+        subset1 = pd.concat([subset1, subset[(subset['MES'] == d.month) & (subset['DIA'] == d.day)]], axis=0)
     subset1 = subset1[subset1['HORA'] == fecha.hour]
     return subset1
 
@@ -312,8 +312,8 @@ fecha = str2date()
 # de cada año +- 7 días, es decir, contiene datos de 15 días de cada año
 subset = extraer_subset_fechas()
 #print("Shape del subset: {}".format(subset.shape))
-#print(subset.head(20))
-#print(subset.tail(20))
+#print(subset.head(25))
+#print(subset.tail(25))
 
 def extraer_datos_pronostico(subset, columna):
     """
@@ -420,7 +420,7 @@ def pronostico(variable, valor, delta):
         return pronos_redondeado
     return pronos
 
-# En la lista 'datos' se almacenarán todos los pronósticos para el despliegue a pantalla y a archivo
+# En la lista 'datos' se almacenarán todos los pronósticos para el despliegue a pantalla y archivo
 datos = []
 
 def horas_pronosticadas():
@@ -456,19 +456,28 @@ pronostico_MAG = pronostico("MAG", vel, 4.)
 datos.append(pronostico_MAG)
 
 # Pronóstico para la variable Ráfagas de viento
+print("RAFAGAS ACTUALES: {}\nTIPO: {}".format(raf, type(raf)))
 if raf == '0':
     pronostico_RAF = pronostico("RAF", str(int(vel)+10), 4.)
 else:
     pronostico_RAF = pronostico("RAF", raf, 4.)
 datos.append(pronostico_RAF)
 
-for i in range(13):
-    HORA = str(datos[0][i]).zfill(2)
-    QNH = round(datos[1][i], 2)
-    TEMP = round(datos[2][i], 1)
-    DIR = int(datos[3][i])
-    MAG = int(round(datos[4][i], 0))
-    RAF = int(round(datos[5][i], 0))
-    print("{} {:3.2f} {:3.1f} {:3d} {:3d} {:3d}".format(HORA, QNH, TEMP, DIR, MAG, RAF))
+# Se crea el objeto de tipo file para escribir el pronóstico
+f = open("pronos.txt", "w")
 
+def escribir_a_archivo():
+    for i in range(13):
+        HORA = str(datos[0][i]).zfill(2)
+        QNH = round(datos[1][i], 2)
+        TEMP = round(datos[2][i], 1)
+        DIR = int(datos[3][i])
+        MAG = int(round(datos[4][i], 0))
+        RAF = int(round(datos[5][i], 0))
+        print("{} {:3.2f} {:3.1f} {:3d} {:3d} {:3d}".format(HORA, QNH, TEMP, DIR, MAG, RAF))
+        f.write("{} {:3.2f} {:3.1f} {:3d} {:3d} {:3d}\n".format(HORA, QNH, TEMP, DIR, MAG, RAF))
+
+escribir_a_archivo()
+
+f.close()
 log.close()
