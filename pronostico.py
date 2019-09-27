@@ -142,6 +142,7 @@ def scraping_metar():
                 return " ".join(lista)
     return ''
 
+# Se scrapea el metar más actual desde la página de Ogimet.com
 metar = scraping_metar()
 if metar != '':
     print(metar)
@@ -152,7 +153,7 @@ else:
 
 class METAR(object):
     """
-    Esta clase evalúa cada entrada del METAR y extrae los datos de interés para
+    Esta clase crea un objeto METAR, evalúa cada entrada y extrae los datos de interés para
     generar los cálculos del pronóstico.
     """
 
@@ -272,9 +273,6 @@ def str2float(valor):
         return float(valor)
     return valor
 
-# Se crean los valores numéricos con los datos del METAR
-fecha = str2date()
-
 def definir_rango_fechas():
     """
     Esta función define el rango de fechas para buscar dentro de la data de los METAR.
@@ -301,16 +299,21 @@ def extraer_subset_fechas():
     """
     fechas = definir_rango_fechas()
     subset = data[(data['MES'] == fechas[0].month) | (data['MES'] == fechas[-1].month)]
-    subset1 = subset[subset['DIA'] == fechas[0].day]
+    subset1 = subset[(subset['MES'] == fechas[0].month) & (subset['DIA'] == fechas[0].day)]
     for d in fechas[1:]:
-        subset1 = pd.concat([subset1, subset[subset['DIA'] == d.day]], axis=0)
+        subset1 = pd.concat([subset1, subset[(subset['MES'] == d.month) & (subset['DIA'] == d.day)]], axis=0)
     subset1 = subset1[subset1['HORA'] == fecha.hour]
     return subset1
 
+# Se crea un nuevo objeto de tipo datetime.date con la fecha actual extraida del METAR
+fecha = str2date()
+
+# Se crea el subset usando como criterio la fecha actual, este subset contiene todos los datos de la misma fecha
+# de cada año +- 7 días, es decir, contiene datos de 15 días de cada año
 subset = extraer_subset_fechas()
-print("Shape del subset: {}".format(subset.shape))
-#print(subset.head(20))
-#print(subset.tail(20))
+#print("Shape del subset: {}".format(subset.shape))
+#print(subset.head(25))
+#print(subset.tail(25))
 
 def extraer_datos_pronostico(subset, columna):
     """
@@ -327,7 +330,7 @@ def extraer_datos_pronostico(subset, columna):
     listas_por_hora = []
     for f in filas:
         lista = []
-        for h in range(1, 13):
+        for h in range(1, 14):
             lista.append(data[columna][f+h])
         listas_por_hora.append(lista)
     return listas_por_hora
@@ -371,7 +374,7 @@ def extraer_subset_valor(columna, valor, delta):
     if len(listas_por_hora) > 0:
         return promedios(listas_por_hora)
     else:
-        return([0] * 12)
+        return([0] * 13)
 
 def redondear_entero(valor):
     """
@@ -406,7 +409,7 @@ def pronostico(variable, valor, delta):
     elif valor.isdigit():
         valor = str2float(valor)
     elif valor == '':
-        return ['///'] * 12
+        return ['///'] * 13
     if variable == "QNH":
         valor = valor / 100
     pronos = extraer_subset_valor(variable, valor, delta)
@@ -417,7 +420,7 @@ def pronostico(variable, valor, delta):
         return pronos_redondeado
     return pronos
 
-# En la lista 'datos' se almacenarán todos los pronósticos para el despliegue a pantalla y a archivo
+# En la lista 'datos' se almacenarán todos los pronósticos para el despliegue a pantalla y archivo
 datos = []
 
 def horas_pronosticadas():
@@ -429,7 +432,7 @@ def horas_pronosticadas():
     Retorna las horas de pronóstico como una lista.
     """
     lista = []
-    for i in range(1, 13):
+    for i in range(1, 14):
         nueva_fecha = fecha + timedelta(hours=i)
         lista.append(nueva_fecha.hour)
     return lista
@@ -453,19 +456,28 @@ pronostico_MAG = pronostico("MAG", vel, 4.)
 datos.append(pronostico_MAG)
 
 # Pronóstico para la variable Ráfagas de viento
+print("RAFAGAS ACTUALES: {}\nTIPO: {}".format(raf, type(raf)))
 if raf == '0':
     pronostico_RAF = pronostico("RAF", str(int(vel)+10), 4.)
 else:
     pronostico_RAF = pronostico("RAF", raf, 4.)
 datos.append(pronostico_RAF)
 
-for i in range(12):
-    HORA = str(datos[0][i]).zfill(2)
-    QNH = round(datos[1][i], 2)
-    TEMP = round(datos[2][i], 1)
-    DIR = int(datos[3][i])
-    MAG = int(round(datos[4][i], 0))
-    RAF = int(round(datos[5][i], 0))
-    print("{} {:3.2f} {:3.1f} {:3d} {:3d} {:3d}".format(HORA, QNH, TEMP, DIR, MAG, RAF))
+# Se crea el objeto de tipo file para escribir el pronóstico
+f = open("pronos.txt", "w")
 
+def escribir_a_archivo():
+    for i in range(13):
+        HORA = str(datos[0][i]).zfill(2)
+        QNH = round(datos[1][i], 2)
+        TEMP = round(datos[2][i], 1)
+        DIR = int(datos[3][i])
+        MAG = int(round(datos[4][i], 0))
+        RAF = int(round(datos[5][i], 0))
+        print("{} {:3.2f} {:3.1f} {:3d} {:3d} {:3d}".format(HORA, QNH, TEMP, DIR, MAG, RAF))
+        f.write("{} {:3.2f} {:3.1f} {:3d} {:3d} {:3d}\n".format(HORA, QNH, TEMP, DIR, MAG, RAF))
+
+escribir_a_archivo()
+
+f.close()
 log.close()
