@@ -464,7 +464,15 @@ else:
 datos.append(pronostico_RAF)
 
 # Se crea el objeto de tipo file para escribir el pronóstico
-f = open("pronos.txt", "w")
+salida = open("pronos.txt", "w")
+fecha_salida = fecha_para_registro()
+salida.write("ESTE MODELO CORRIÓ EL {}UTC.".format(fecha_salida).center(131, ' ') + '\n')
+salida.write('PROMEDIO HORARIO PARA LAS PRÓXIMAS 12 HORAS DE LAS VARIABLES DE INTERÉS EN EL AEROPUERTO INT. JUAN SANTAMARÍA (MROC).'.center(131, ' ') + '\n')
+salida.write('SALIDA DEL MODELO ESTADÍSTICO AEROData USANDO VALORES MEDIOS PARA EL QNH (inHg), TEMPERATURA (°C), DIRECCION Y VELOCIDAD DEL VIENTO.\n')
+salida.write('INSTITUTO METEOROLÓGICO NACIONAL, DEPARTAMENTO DE METEOROLOGÍA SINÓPTICA Y AERONÁUTICA.'.center(131, ' ') + '\n')
+salida.write('#' * 132 + '\n\n')
+salida.write('#' * 132 + '\n\n')
+salida.write('HORA UTC    QNH (inHg)    Temperatura (°C)    Direccion Viento (°)    Velocidad Viento (kt)    Ráfagas Viento (kt)\n')
 
 def escribir_a_archivo():
     for i in range(13):
@@ -475,9 +483,9 @@ def escribir_a_archivo():
         MAG = int(round(datos[4][i], 0))
         RAF = int(round(datos[5][i], 0))
         print("{} {:3.2f} {:3.1f} {:3d} {:3d} {:3d}".format(HORA, QNH, TEMP, DIR, MAG, RAF))
-        f.write("{} {:3.2f} {:3.1f} {:3d} {:3d} {:3d}\n".format(HORA, QNH, TEMP, DIR, MAG, RAF))
+        salida.write("{} {:3.2f} {:3.1f} {:3d} {:3d} {:3d}\n".format(HORA, QNH, TEMP, DIR, MAG, RAF))
 
 escribir_a_archivo()
 
-f.close()
+salida.close()
 log.close()
