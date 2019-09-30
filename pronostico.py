@@ -428,6 +428,22 @@ def pronostico_redondeado(pronos):
         pronos_redondeado.append(redondear_entero(valor))
     return pronos_redondeado
 
+def redondear_a_9999(valor):
+    if valor == 10000:
+        return 9999
+    return valor
+
+def pronostico_redondeado_visibilidad(pronos):
+    pronostico_redondeado = []
+    for valor in pronos:
+        if valor >= 1000:
+            divisor = 1000
+        else:
+            divisor = 100
+        valor = valor / divisor
+        pronostico_redondeado.append(redondear_a_9999(round(valor, 0) * divisor))
+    return pronostico_redondeado        
+
 def pronostico(variable, valor, delta):
     """
     Esta función lleva a cabo el pronóstico para la variable especificada.
@@ -449,10 +465,9 @@ def pronostico(variable, valor, delta):
         valor = valor / 100
     pronos = extraer_subset_valor(variable, valor, delta)
     if variable == "DIR":
-        pronos_redondeado = []
-        for valor in pronos:
-            pronos_redondeado.append(redondear_entero(valor))
-        return pronos_redondeado
+        return pronostico_redondeado(pronos)
+    if variable == "VIS":
+        return pronostico_redondeado_visibilidad(pronos)
     return pronos
 
 # En la lista 'datos' se almacenarán todos los pronósticos para el despliegue a pantalla y archivo
