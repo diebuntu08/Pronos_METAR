@@ -423,17 +423,43 @@ def redondear_entero(valor):
     return valor
 
 def pronostico_redondeado(pronos):
+    """
+    Esta función redondea los valores de una lista y los almacena en otra la cual retornará
+    al final del proceso.
+    ----------------------------
+    Recibe un parámetro:
+    * pronos: list, la lista con los valores pronosticados que se desean redondear.
+    ----------------------------
+    Retorna una lista con los valores redondeados.
+    """
     pronos_redondeado = []
     for valor in pronos:
         pronos_redondeado.append(redondear_entero(valor))
     return pronos_redondeado
 
 def redondear_a_9999(valor):
+    """
+    Esta función cambia el valor de 10000 por 9999 par la visibilidad reinante.
+    ----------------------------
+    Recibe un parámetro:
+    * valor: int o float, el valor a ser cambiado.
+    ----------------------------
+    Retorna el valor correspondiente de acuerdo con la condición.
+    """
     if valor == 10000:
         return 9999
     return valor
 
 def pronostico_redondeado_visibilidad(pronos):
+    """
+    Esta función redondea los valores pronosticados de la visibilidad reinante en una lista
+    al millar más próximo.
+    -----------------------------
+    Recibe un parámetro:
+    * pronos: list, la lista con los valores que se desean redondear.
+    -----------------------------
+    Retorna una lista con los valores redondeados al millar más próximo.
+    """
     pronostico_redondeado = []
     for valor in pronos:
         if valor >= 1000:
