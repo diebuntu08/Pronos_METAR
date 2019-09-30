@@ -151,11 +151,16 @@ else:
     registro_de_actividad(mensaje + '\n')
     exit()
 
+# Clase para crear objetos que describen las características del METAR
 class METAR(object):
     """
     Esta clase crea un objeto METAR, evalúa cada entrada y extrae los datos de interés para
     generar los cálculos del pronóstico.
     """
+
+    pronostico_tendencia = ['NOSIG', 'NSIG', 'NSOIG', 'NOSGI', 'NOSG', 'NOSI',
+                            'BECMG', 'BCMG', 'BCEMG', 'BECGM', 'BECM', 'BECG',
+                            'TEMPO', 'TMPO', 'TMEPO', 'TEMOP', 'TEMP', 'TEMO']
 
     def __init__(self, metar):
         """
@@ -231,6 +236,28 @@ class METAR(object):
             if acierto:
                 return(entrada.replace('a', '').replace('A', ''))
         return ''
+    
+    def extraer_visibilidad(self):
+        """
+        Método: Extrae la visibilidad reinante del METAR.
+        ------------------------
+        No recibe ningún parámetro.
+        ------------------------
+        Retorna la visibilidad del METAR.
+        """
+        formato = r'\d{4}'
+        formato_viento = r'\d{5}KT|\d{5}G\d{2}KT|VRB\d{2}KT|VRB\d{2}G\d{2}KT'
+        for entrada in self.metar:
+            acierto_viento = re.match(formato_viento, entrada)
+            if acierto_viento:
+                continue
+            if entrada in self.pronostico_tendencia:
+                break
+            acierto = re.match(formato, entrada)
+            if acierto:
+                return(entrada)
+        return ''
+            
 
 # Se crea el objeto METAR para poder extraer todos los datos necesarios
 metar_obj = METAR(metar)
