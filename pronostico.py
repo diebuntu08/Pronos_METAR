@@ -147,7 +147,7 @@ metar = scraping_metar()
 if metar != '':
     print(metar)
 else:
-    mensaje = "{}... No se pudo acceder al METAR"
+    mensaje = "{}... No se pudo acceder al METAR."
     registro_de_actividad(mensaje + '\n')
     exit()
 
@@ -247,7 +247,7 @@ class METAR(object):
         """
         formato = r'\d{4}'
         formato_viento = r'\d{5}KT|\d{5}G\d{2}KT|VRB\d{2}KT|VRB\d{2}G\d{2}KT'
-        for entrada in self.metar:
+        for entrada in self.metar[4:]:
             acierto_viento = re.match(formato_viento, entrada)
             if acierto_viento:
                 continue
@@ -256,7 +256,7 @@ class METAR(object):
             acierto = re.match(formato, entrada)
             if acierto:
                 return(entrada)
-        return ''
+        return '9999'
             
 
 # Se crea el objeto METAR para poder extraer todos los datos necesarios
@@ -269,6 +269,8 @@ fecha = metar_obj.extraer_fecha()
 dirc, vel, raf = metar_obj.extraer_viento()
 T, Tr = metar_obj.extraer_temperaturas()
 presion = metar_obj.extraer_presion()
+vis = metar_obj.extraer_visibilidad()
+print("Visibilidad del METAR: {}".format(vis))
 mensaje = "{}... Se extraen los datos del objeto metar usando sus métodos públicos correctamente."
 registro_de_actividad(mensaje)
 #print("Fecha: {}".format(fecha))
