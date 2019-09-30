@@ -257,7 +257,24 @@ class METAR(object):
             if acierto:
                 return(entrada)
         return '9999'
-            
+    
+    def extraer_nubosidad(self):
+        """
+        Método: Extrae las capas de nubes del METAR.
+        ------------------------
+        No recibe ningún parámetro.
+        ------------------------
+        Retorna una lista con las capas de nubes extraidas del METAR.
+        """
+        formato = r'(FEW|SCT|BKN|OVC)\d{3}(CB|TCU)*'
+        nubes = ''
+        for entrada in self.metar[5:]:
+            if entrada in self.pronostico_tendencia:
+                break
+            acierto = re.match(formato, entrada)
+            if acierto:
+                nubes += entrada + ' '
+        return nubes.split(' ')[:-1]
 
 # Se crea el objeto METAR para poder extraer todos los datos necesarios
 metar_obj = METAR(metar)
@@ -270,7 +287,9 @@ dirc, vel, raf = metar_obj.extraer_viento()
 T, Tr = metar_obj.extraer_temperaturas()
 presion = metar_obj.extraer_presion()
 vis = metar_obj.extraer_visibilidad()
+nubes = metar_obj.extraer_nubosidad()
 print("Visibilidad del METAR: {}".format(vis))
+print("Nubes del METAR: {}".format(nubes))
 mensaje = "{}... Se extraen los datos del objeto metar usando sus métodos públicos correctamente."
 registro_de_actividad(mensaje)
 #print("Fecha: {}".format(fecha))
