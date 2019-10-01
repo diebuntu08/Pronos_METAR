@@ -258,23 +258,29 @@ class METAR(object):
                 return(entrada)
         return '9999'
     
-    def extraer_nubosidad(self):
+    def extraer_tiempo(self, tiempo='nubes'):
         """
         Método: Extrae las capas de nubes del METAR.
         ------------------------
-        No recibe ningún parámetro.
+        No recibe ningún parámetro:
+        * tiempo: string, el tiempo a extraer, puede ser 'nubes' o 't_presente'.
         ------------------------
         Retorna una lista con las capas de nubes extraidas del METAR.
         """
-        formato = r'(FEW|SCT|BKN|OVC)\d{3}(CB|TCU)*'
-        nubes = ''
+        if tiempo == 'nubes':
+            formato = r'(FEW|SCT|BKN|OVC)\d{3}(CB|TCU)*'
+        elif tiempo == 't_presente':
+            formato = r'(\+|-)*(RA|DZ|SHRA|TSRA|FG|BR|BCFG)'
+        else:
+            raise ValueError("Incorrect parameter! '{}' is not recognized".format(tiempo))
+        TIEMPO = ''
         for entrada in self.metar[5:]:
             if entrada in self.pronostico_tendencia:
                 break
             acierto = re.match(formato, entrada)
             if acierto:
-                nubes += entrada + ' '
-        return nubes.split(' ')[:-1]
+                TIEMPO += entrada + ' '
+        return TIEMPO.split(' ')[:-1]
 
 # Se crea el objeto METAR para poder extraer todos los datos necesarios
 metar_obj = METAR(metar)
@@ -287,9 +293,11 @@ dirc, vel, raf = metar_obj.extraer_viento()
 T, Tr = metar_obj.extraer_temperaturas()
 presion = metar_obj.extraer_presion()
 vis = metar_obj.extraer_visibilidad()
-nubes = metar_obj.extraer_nubosidad()
+nubes = metar_obj.extraer_tiempo()
+t_presente = metar_obj.extraer_tiempo(tiempo='t_presente')
 print("Visibilidad del METAR: {}".format(vis))
 print("Nubes del METAR: {}".format(nubes))
+print("Tiempo presente del METAR: {}".format(t_presente))
 mensaje = "{}... Se extraen los datos del objeto metar usando sus métodos públicos correctamente."
 registro_de_actividad(mensaje)
 #print("Fecha: {}".format(fecha))
