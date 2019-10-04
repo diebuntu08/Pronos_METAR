@@ -567,7 +567,7 @@ else:
 datos.append(pronostico_RAF)
 
 # Pronósticos para la variable Visibilidad
-pronostico_VIS = pronostico("VIS", vis, 4000.)
+pronostico_VIS = pronostico("VIS", vis, 1000.)
 datos.append(pronostico_VIS)
 
 # Se crea el objeto de tipo file para escribir el pronóstico y se formatea el mismo para la salida
