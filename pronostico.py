@@ -578,7 +578,7 @@ def verificar_pronostico_rafagas():
     No retorna ningún resultado.
     """
     for i in range(len(pronostico_RAF)):
-        if pronostico_RAF[i] < (pronostico_MAG[i] + 5):
+        if pronostico_RAF[i] < (pronostico_MAG[i] + 5.):
             pronostico_RAF[i] = 0
 
 verificar_pronostico_rafagas()
