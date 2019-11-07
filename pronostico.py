@@ -197,7 +197,7 @@ class METAR(object):
                 dirc = entrada[0:3]
                 vel = entrada[3:5]
                 if 'G' in entrada:
-                    raf = entrada[7:9]
+                    raf = entrada[6:8]
                 else:
                     raf = '0'
                 return(dirc, vel, raf)
@@ -290,6 +290,7 @@ registro_de_actividad(mensaje)
 # Se extraen todos los datos con los métodos públicos del objeto METAR
 fecha = metar_obj.extraer_fecha()
 dirc, vel, raf = metar_obj.extraer_viento()
+print("Los datos del viento: {}, {}, {}".format(dirc, vel, raf))
 T, Tr = metar_obj.extraer_temperaturas()
 presion = metar_obj.extraer_presion()
 vis = metar_obj.extraer_visibilidad()
@@ -424,8 +425,8 @@ def extraer_subset_valor(columna, valor, delta):
     ----------------------------
     Retorna el subset extraído.
     """
-    subset1 = subset[(subset[columna] >= (valor-delta)) & (subset[columna] <= (valor+delta))]
-    listas_por_hora = extraer_datos_pronostico(subset1, columna)
+    sub_subset = subset[(subset[columna] >= (valor-delta)) & (subset[columna] <= (valor+delta))]
+    listas_por_hora = extraer_datos_pronostico(sub_subset, columna)
     #print(listas_por_hora)
     if len(listas_por_hora) > 0:
         return promedios(listas_por_hora)
@@ -517,6 +518,8 @@ def pronostico(variable, valor, delta):
     if variable == "QNH":
         valor = valor / 100
     pronos = extraer_subset_valor(variable, valor, delta)
+    if variable == "RAF":
+        print("Pronóstico de Ráfagas: {}".format(pronos))
     if variable == "DIR":
         return pronostico_redondeado(pronos)
     if variable == "VIS":
@@ -564,6 +567,21 @@ if raf == '0':
     pronostico_RAF = pronostico("RAF", str(int(vel)+10), 4.)
 else:
     pronostico_RAF = pronostico("RAF", raf, 4.)
+
+def verificar_pronostico_rafagas():
+    """
+    Esta función verifica que cada entrada en la lista pronostico_RAF
+    sea al menos mayor a 5 unidades de la misma entrada en pronostico_MAG.
+    ----------------------------
+    No recibe ningún parámetro.
+    ----------------------------
+    No retorna ningún resultado.
+    """
+    for i in range(len(pronostico_RAF)):
+        if pronostico_RAF[i] < (pronostico_MAG[i] + 5):
+            pronostico_RAF[i] = 0
+
+verificar_pronostico_rafagas()
 datos.append(pronostico_RAF)
 
 # Pronósticos para la variable Visibilidad
