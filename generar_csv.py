@@ -7,7 +7,7 @@ import re
 f = open('files/metar_data.csv', 'w')
 
 #f.write("118485,8,,,,,,,\n")
-f.write('ANIO,MES,DIA,HORA,MINUTO,DIR,MAG,RAF,VIS,RA,SHRA,TSRA,BCFG,BR,FG,CAVOK,TEMP,DPTEMP,QNH,CAPA1.ALTURA1,CONVECTIVA1,CAPA2.ALTURA2,CONVECTIVA2,CAPA3.ALTURA3,CONVECTIVA3,CAPA4.ALTURA4,CONVECTIVA4\n')
+f.write('ANIO,MES,DIA,HORA,MINUTO,DIR,MAG,RAF,VIS,RA,SHRA,TSRA,BCFG,BR,FG,CAVOK,TEMP,DPTEMP,QNH,CAPA1,ALTURA1,CONVECTIVA1,CAPA2,ALTURA2,CONVECTIVA2,CAPA3,ALTURA3,CONVECTIVA3,CAPA4,ALTURA4,CONVECTIVA4\n')
 
 anios = [x for x in range(2005, 2019)]
 
@@ -26,7 +26,7 @@ formatos = {"fecha" : r'\d{12}',
 			"fg": r'FG'}
 
 formatos_viento = [r'VRB\d{2}KT', r'VRB\d{2}G\d{2}KT', r'\d{5}KT', r'\d{5}G\d{2}KT']
-formatos_capas_nubes = {"FEW": 2, "SCT": 4, "BKN": 7, "OVC": 8}
+formatos_capas_nubes = {"FEW": "2", "SCT": "4", "BKN": "7", "OVC": "8"}
 
 class Metar:
 
@@ -57,7 +57,10 @@ class Metar:
 		self.bcfg = "0"
 		self.br = "0"
 		self.fg = "0"
-		self.nubes = [["0", "0", "0"]] * 4
+		self.nubes = [[self.nan, self.nan, "0"],
+					  [self.nan, self.nan, "0"],
+					  [self.nan, self.nan, "0"],
+					  [self.nan, self.nan, "0"]]
 	
 	def extraer_datos(self):
 		self.fecha = self.metar[0]
@@ -178,7 +181,7 @@ class Metar:
 	
 	def separar_nubosidad(self, entrada):
 		self.nubes[self.indice_nubes][0] = formatos_capas_nubes[entrada[:3]]
-		self.nubes[self.indice_nubes][1] = formatos_capas_nubes[entrada[3:6]]
+		self.nubes[self.indice_nubes][1] = entrada[3:6]
 		self.nubes[self.indice_nubes][2] = "0"
 		if len(entrada) > 6:
 			if entrada[6:] == "CB":
