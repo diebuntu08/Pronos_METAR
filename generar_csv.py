@@ -96,10 +96,10 @@ class Metar:
 				elif ac_fg:
 					self.fg = "1"
 				elif ac_nubes:
-					if indice_nubes > 3:
+					if self.indice_nubes > 3:
 						continue
-					self.nubes[indice_nubes] = "1"
-					indice_nubes += 1
+					self.separar_nubosidad(entrada)
+					self.indice_nubes += 1
 				elif ac_cavok:
 					self.cavok = entrada
 					self.vis = "9999"
