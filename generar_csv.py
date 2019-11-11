@@ -7,14 +7,23 @@ import re
 f = open('files/metar_data.csv', 'w')
 
 #f.write("118485,8,,,,,,,\n")
-f.write('ANIO,MES,DIA,HORA,MINUTO,DIR,MAG,RAF,VIS,TIEMPO1,TIEMPO2,TIEMPO3,NUBES1,NUBES2,NUBES3,NUBES4,CAVOK,TEMP,DPTEMP,QNH\n')
+f.write('ANIO,MES,DIA,HORA,MINUTO,DIR,MAG,RAF,VIS,RA,SHRA,TSRA,BCFG,BR,FG,NUBES1,NUBES2,NUBES3,NUBES4,CAVOK,TEMP,DPTEMP,QNH\n')
 
 anios = [x for x in range(2005, 2019)]
 
-formatos = {"fecha" : r'\d{12}', "viento" : r'VRB\d{2}KT|VRB\d{2}G\d{2}KT|\d{5}KT|\d{5}G\d{2}KT',
-			"vis" : r'\d{4}|\d{4}(N|E|W|S|NW|NE|SW|SE)', "cavok" : r'CAVOK', "temp" : r'\d{2}/\d{2}',
-			"qnh" : r'A\d{4}|A////', "nubes": r'(FEW|SCT|BKN|OVC)\d{3}(CB|TCU)*',
-			"tiempo": r'(\+|-)*(RA|DZ|SHRA|TSRA|FG|BR|BCFG)'}
+formatos = {"fecha" : r'\d{12}',
+			"viento" : r'VRB\d{2}KT|VRB\d{2}G\d{2}KT|\d{5}KT|\d{5}G\d{2}KT',
+			"vis" : r'\d{4}|\d{4}(N|E|W|S|NW|NE|SW|SE)',
+			"cavok" : r'CAVOK',
+			"temp" : r'\d{2}/\d{2}',
+			"qnh" : r'A\d{4}|A////',
+			"nubes": r'(FEW|SCT|BKN|OVC)\d{3}(CB|TCU)*',
+			"ra": r'(\+|-)*RA',
+			"shra": r'(\+|-)*SHRA',
+			"tsra": r'(\+|-)*TSRA',
+			"bcfg": r'BCFG',
+			"br": r'BR',
+			"fg": r'FG'}
 
 formatos_viento = [r'VRB\d{2}KT', r'VRB\d{2}G\d{2}KT', r'\d{5}KT', r'\d{5}G\d{2}KT']
 
@@ -30,13 +39,23 @@ class Metar:
 		self.pat_temp = re.compile(formatos["temp"])
 		self.pat_qnh = re.compile(formatos["qnh"])
 		self.pat_nubes = re.compile(formatos["nubes"])
-		self.pat_tiempo = re.compile(formatos["tiempo"])
+		self.pat_ra = re.compile(formatos["ra"])
+		self.pat_shra = re.compile(formatos["shra"])
+		self.pat_tsra = re.compile(formatos["tsra"])
+		self.pat_bcfg = re.compile(formatos["bcfg"])
+		self.pat_br = re.compile(formatos["br"])
+		self.pat_fg = re.compile(formatos["fg"])
 		self.viento = "99999KT"
 		self.vis = "-9999"
 		self.cavok = "0"
 		self.temp = "99/99"
 		self.qnh = "A9999"
-		self.tiempo = ["0"] * 3
+		self.ra = "0"
+		self.shra = "0"
+		self.tsra = "0"
+		self.bcfg = "0"
+		self.br = "0"
+		self.fg = "0"
 		self.nubes = ["0"] * 4
 	
 	def extraer_datos(self):
@@ -46,24 +65,35 @@ class Metar:
 			self.cavok = self.nan
 		else:
 			indice_nubes = 0
-			indice_tiempo = 0
 			for entrada in self.metar:
 				ac_viento = self.pat_viento.match(entrada)
 				ac_vis = self.pat_vis.match(entrada)
 				ac_cavok = self.pat_cavok.match(entrada)
 				ac_temp = self.pat_temp.match(entrada)
 				ac_qnh = self.pat_qnh.match(entrada)
-				ac_tiempo = self.pat_tiempo.match(entrada)
+				ac_ra = self.pat_ra.match(entrada)
+				ac_shra = self.pat_shra.match(entrada)
+				ac_tsra = self.pat_tsra.match(entrada)
+				ac_bcfg = self.pat_bcfg.match(entrada)
+				ac_br = self.pat_br.match(entrada)
+				ac_fg = self.pat_fg.match(entrada)
 				ac_nubes = self.pat_nubes.match(entrada)
 				if ac_viento:
 					self.viento = entrada
 				elif ac_vis:
 					self.vis = entrada
-				elif ac_tiempo:
-					if indice_tiempo > 2:
-						continue
-					self.tiempo[indice_tiempo] = "1"
-					indice_tiempo += 1
+				elif ac_ra:
+					self.ra = "1"
+				elif ac_shra:
+					self.shra = "1"
+				elif ac_tsra:
+					self.tsra = "1"
+				elif ac_bcfg:
+					self.bcfg = "1"
+				elif ac_br:
+					self.br = "1"
+				elif ac_fg:
+					self.fg = "1"
 				elif ac_nubes:
 					if indice_nubes > 3:
 						continue
@@ -152,10 +182,29 @@ class Metar:
 		self.extrae_cavok()
 		self.extrae_temperaturas()
 		self.extrae_qnh()
-		lista = [self.anio, self.mes, self.dia, self.hora, self.minuto, self.dir,
-				 self.mag, self.raf, self.vis, self.tiempo[0], self.tiempo[1],
-				 self.tiempo[2], self.nubes[0], self.nubes[1], self.nubes[2],
-				 self.nubes[3], self.cavok, self.T, self.Tr, self.qnh]
+		lista = [self.anio,
+				 self.mes,
+				 self.dia,
+				 self.hora,
+				 self.minuto,
+				 self.dir,
+				 self.mag,
+				 self.raf,
+				 self.vis,
+				 self.ra,
+				 self.shra,
+				 self.tsra,
+				 self.bcfg,
+				 self.br,
+				 self.fg,
+				 self.nubes[0],
+				 self.nubes[1],
+				 self.nubes[2],
+				 self.nubes[3],
+				 self.cavok,
+				 self.T,
+				 self.Tr,
+				 self.qnh]
 		return lista
 
 separador = ","
