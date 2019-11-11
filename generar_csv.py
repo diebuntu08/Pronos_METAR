@@ -26,6 +26,7 @@ formatos = {"fecha" : r'\d{12}',
 			"fg": r'FG'}
 
 formatos_viento = [r'VRB\d{2}KT', r'VRB\d{2}G\d{2}KT', r'\d{5}KT', r'\d{5}G\d{2}KT']
+formatos_capas_nubes = {"FEW": 2, "SCT": 4, "BKN": 7, "OVC": 8}
 
 class Metar:
 
@@ -56,7 +57,7 @@ class Metar:
 		self.bcfg = "0"
 		self.br = "0"
 		self.fg = "0"
-		self.nubes = ["0"] * 4
+		self.nubes = [["0", "0", "0"]] * 4
 	
 	def extraer_datos(self):
 		self.fecha = self.metar[0]
@@ -64,7 +65,7 @@ class Metar:
 		if "NIL=\n" in self.metar:
 			self.cavok = self.nan
 		else:
-			indice_nubes = 0
+			self.indice_nubes = 0
 			for entrada in self.metar:
 				ac_viento = self.pat_viento.match(entrada)
 				ac_vis = self.pat_vis.match(entrada)
@@ -175,6 +176,19 @@ class Metar:
 			self.qnh = float(self.qnh) / 100
 			self.qnh = str(self.qnh)
 	
+	def separar_nubosidad(self, entrada):
+		self.nubes[self.indice_nubes][0] = formatos_capas_nubes[entrada[:3]]
+		self.nubes[self.indice_nubes][1] = formatos_capas_nubes[entrada[3:6]]
+		self.nubes[self.indice_nubes][2] = "0"
+		if len(entrada) > 6:
+			if entrada[6:] == "CB":
+				# La numeración corresponde a si hay o no nubes convectivas
+				# 1: CB
+				# 2: TCU
+				self.nubes[self.indice_nubes][2] = "1"
+			else:
+				self.nubes[self.indice_nubes][2] = "2"	
+
 	def return_data(self):
 		self.extraer_datos()
 		self.extraer_datos_viento()
