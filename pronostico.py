@@ -388,7 +388,10 @@ def extraer_datos_pronostico(subset, columna):
     for f in filas:
         lista = []
         for h in range(1, 14):
-            lista.append(data[columna][f+h])
+            try:
+                lista.append(data[columna][f+h])
+            except:
+                continue
         listas_por_hora.append(lista)
     return listas_por_hora
 
@@ -406,7 +409,10 @@ def promedios(listas):
         suma = 0
         contador = 0
         for l in listas:
-            valor = l[i]
+            try:
+                valor = l[i]
+            except:
+                continue
             if str(valor) == 'nan' or valor == 999.0:
                 contador += 1
                 continue
