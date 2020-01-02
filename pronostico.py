@@ -585,8 +585,8 @@ verificar_pronostico_rafagas()
 datos.append(pronostico_RAF)
 
 # Pronósticos para la variable Visibilidad
-pronostico_VIS = pronostico("VIS", vis, 1000.)
-datos.append(pronostico_VIS)
+#pronostico_VIS = pronostico("VIS", vis, 1000.)
+#datos.append(pronostico_VIS)
 
 # Se crea el objeto de tipo file para escribir el pronóstico y se formatea el mismo para la salida
 # del pronóstico.
@@ -615,8 +615,9 @@ def escribir_a_archivo():
         DIR = int(datos[3][i])
         MAG = int(round(datos[4][i], 0))
         RAF = int(round(datos[5][i], 0))
-        VIS = int(round(datos[6][i], 0))
-        print("{} {:3.2f} {:3.1f} {:3d} {:3d} {:3d} {:4d}".format(HORA, QNH, TEMP, DIR, MAG, RAF, VIS))
+        #VIS = int(round(datos[6][i], 0))
+        #print("{} {:3.2f} {:3.1f} {:3d} {:3d} {:3d} {:4d}".format(HORA, QNH, TEMP, DIR, MAG, RAF, VIS))
+        print("{} {:3.2f} {:3.1f} {:3d} {:3d} {:3d}".format(HORA, QNH, TEMP, DIR, MAG, RAF))
         lista.append("       | {:>8} {:13.2f} {:19.1f} {:23d} {:24d} {:22d} |".format(HORA, QNH, TEMP, DIR, MAG, RAF))
     t = (tabla.format('\n'.join(fila for fila in lista)))
     salida.write(t)

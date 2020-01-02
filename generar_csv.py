@@ -9,7 +9,7 @@ f = open('files/metar_data.csv', 'w')
 #f.write("118485,8,,,,,,,\n")
 f.write('ANIO,MES,DIA,HORA,MINUTO,DIR,MAG,RAF,VIS,RA,SHRA,TSRA,BCFG,BR,FG,CAVOK,TEMP,DPTEMP,QNH,CAPA1,ALTURA1,CONVECTIVA1,CAPA2,ALTURA2,CONVECTIVA2,CAPA3,ALTURA3,CONVECTIVA3,CAPA4,ALTURA4,CONVECTIVA4\n')
 
-anios = [x for x in range(2005, 2019)]
+anios = [x for x in range(2005, 2020)]
 
 formatos = {"fecha" : r'\d{12}',
 			"viento" : r'VRB\d{2}KT|VRB\d{2}G\d{2}KT|\d{5}KT|\d{5}G\d{2}KT',
