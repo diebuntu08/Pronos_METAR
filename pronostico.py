@@ -17,6 +17,7 @@ from datetime import datetime, timedelta
 
 import utils.date_tools as datetools
 import utils.scrap_tools as scraptools
+import utils.tools as tools
 from utils.classes.metar_class import METAR
 
 log = open('log.txt', 'w')
@@ -55,8 +56,6 @@ hoy = datetools.fecha_para_metar()
 # URL de Ogimet.com para scrapear el metal más reciente
 URL_BASE = 'https://www.ogimet.com/display_metars2.php?lugar=mroc&tipo=SA&ord=REV&nil=SI&fmt=txt&ano={}&mes={}&day={}&hora={}&anof={}&mesf={}&dayf={}&horaf={}&minf=05&enviar=Ver'
 url = URL_BASE.format(hoy[0], str(hoy[1]).zfill(2), str(hoy[2]).zfill(2), str(hoy[3]).zfill(2), hoy[0], str(hoy[1]).zfill(2), str(hoy[2]).zfill(2), str(hoy[3]).zfill(2))
-
-
 
 # Se scrapea el metar más actual desde la página de Ogimet.com
 metar = scraptools.scraping_metar(log, url)
@@ -264,7 +263,7 @@ def pronostico(variable, valor, delta):
     if valor == 'VRB':
         valor = 180.
     elif valor.isdigit():
-        valor = str2float(valor)
+        valor = tools.str2float(valor)
     elif valor == '':
         return ['///'] * 13
     if variable == "QNH":
@@ -343,7 +342,7 @@ datos.append(pronostico_RAF)
 # Se crea el objeto de tipo file para escribir el pronóstico y se formatea el mismo para la salida
 # del pronóstico.
 salida = open("pronos.txt", "w")
-fecha_salida = fecha_para_registro()
+fecha_salida = datetools.fecha_para_registro()
 salida.write("ESTE MODELO CORRIÓ EL {}UTC.".format(fecha_salida).center(131, ' ') + '\n')
 salida.write('PROMEDIO HORARIO PARA LAS PRÓXIMAS 12 HORAS DE LAS VARIABLES DE INTERÉS EN EL AEROPUERTO INT. JUAN SANTAMARÍA (MROC).'.center(131, ' ') + '\n')
 salida.write('SALIDA DEL MODELO ESTADÍSTICO AEROData USANDO VALORES MEDIOS PARA EL QNH (inHg), TEMPERATURA (°C), DIRECCION Y VELOCIDAD DEL VIENTO.\n')
