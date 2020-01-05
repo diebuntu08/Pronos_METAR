@@ -23,21 +23,24 @@ from utils.classes.metar_class import METAR
 
 log = open('log.txt', 'w')
 
-def copiar_corrida_anterior():
-    """
-    Esta función lleva a cabo la copia de la corrida anterior para el registro y
-    control de calidad de la aplicación.
-    """
-    pass
+
+# Direcciones de los archivos para leer y guardar las corridas anteriores
+f_in = open('pronos.txt', 'r')
+f_out = open('base/salidas.txt', 'a')
 
 # Se lleva a cabo la copia de la corrida anterior.
+#tools.copiar_corrida_anterior(f_in, f_out)
 try:
-    copiar_corrida_anterior()
+    tools.copiar_corrida_anterior2(f_in, f_out)
     mensaje = "{}... Copia de la corrida anterior realizada satisfactoriamente."
     datetools.registro_de_actividad(log, mensaje=mensaje)
 except:
     mensaje = "{}... La copia de la corrida anterior ha fallado!!"
     datetools.registro_de_actividad(log, mensaje=mensaje)
+
+# Se cierran los archivos una vez se ha realizado la copia de la corrida anterior
+f_in.close()
+f_out.close()
 
 # Se lee el archivo metar_data.csv para generar el dataframe de pandas
 data = pd.read_csv('files/metar_data.csv', dtype=float)
@@ -154,8 +157,8 @@ forecastools.verificar_pronostico_rafagas(pronostico_RAF, pronostico_MAG)
 datos.append(pronostico_RAF)
 
 # Pronósticos para la variable Visibilidad
-#pronostico_VIS = forecastools.pronostico("VIS", vis, 1000., data, subset)
-#datos.append(pronostico_VIS)
+pronostico_VIS = forecastools.pronostico("VIS", vis, 1000., data, subset)
+datos.append(pronostico_VIS)
 
 # Se crea el objeto de tipo file para escribir el pronóstico y se formatea el mismo para la salida
 # del pronóstico.
@@ -172,7 +175,7 @@ tabla = """\
        | HORA UTC    QNH (inHg)    Temperatura (°C)    Direccion Viento (°)    Velocidad Viento (kt)    Ráfagas Viento (kt)  |
        |--------------------------------------------------------------------------------------------------------------------|
 {}
-       +--------------------------------------------------------------------------------------------------------------------+\
+       +--------------------------------------------------------------------------------------------------------------------+\n
 """
 
 def escribir_a_archivo():
@@ -184,9 +187,9 @@ def escribir_a_archivo():
         DIR = int(datos[3][i])
         MAG = int(round(datos[4][i], 0))
         RAF = int(round(datos[5][i], 0))
-        #VIS = int(round(datos[6][i], 0))
-        #print("{} {:3.2f} {:3.1f} {:3d} {:3d} {:3d} {:4d}".format(HORA, QNH, TEMP, DIR, MAG, RAF, VIS))
-        print("{} {:3.2f} {:3.1f} {:3d} {:3d} {:3d}".format(HORA, QNH, TEMP, DIR, MAG, RAF))
+        VIS = int(round(datos[6][i], 0))
+        print("{} {:3.2f} {:3.1f} {:3d} {:3d} {:3d} {:4d}".format(HORA, QNH, TEMP, DIR, MAG, RAF, VIS))
+        #print("{} {:3.2f} {:3.1f} {:3d} {:3d} {:3d}".format(HORA, QNH, TEMP, DIR, MAG, RAF))
         lista.append("       | {:>8} {:13.2f} {:19.1f} {:23d} {:24d} {:22d} |".format(HORA, QNH, TEMP, DIR, MAG, RAF))
     t = (tabla.format('\n'.join(fila for fila in lista)))
     salida.write(t)

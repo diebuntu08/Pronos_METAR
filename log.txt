@@ -1,10 +1,10 @@
-2020/01/04 02:14:11... Copia de la corrida anterior realizada satisfactoriamente.
-2020/01/04 02:14:11... Archivo 'metar_data.csv' leido correctamente.
-2020/01/04 02:14:12... Se accede correctamente a la página de Ogimet.com.
-2020/01/04 02:14:12... Se escribe correctamente el METAR más reciente en el archivo 'texto_web.txt'.
-2020/01/04 02:14:12... Se lee correctamente el METAR más reciente desde el archivo 'texto_web.txt'.
-2020/01/04 02:14:12... Se crea el objeto METAR, el cual servirá de condición inicial.
-2020/01/04 02:14:12... Se extraen los datos del objeto metar usando sus métodos públicos correctamente.
-2020/01/04 02:14:12... Se genera un objeto tipo datetime.datetime con la fecha del METAR.
-2020/01/04 02:14:12... Se extraen las filas que coinciden con la fecha actual +- 15 días del archivo CSV.
-2020/01/04 02:14:12... Se genera la lista de horas de pronóstico.
+2020/01/05 11:31:23... Copia de la corrida anterior realizada satisfactoriamente.
+2020/01/05 11:31:23... Archivo 'metar_data.csv' leido correctamente.
+2020/01/05 11:31:24... Se accede correctamente a la página de Ogimet.com.
+2020/01/05 11:31:24... Se escribe correctamente el METAR más reciente en el archivo 'texto_web.txt'.
+2020/01/05 11:31:24... Se lee correctamente el METAR más reciente desde el archivo 'texto_web.txt'.
+2020/01/05 11:31:24... Se crea el objeto METAR, el cual servirá de condición inicial.
+2020/01/05 11:31:24... Se extraen los datos del objeto metar usando sus métodos públicos correctamente.
+2020/01/05 11:31:24... Se genera un objeto tipo datetime.datetime con la fecha del METAR.
+2020/01/05 11:31:24... Se extraen las filas que coinciden con la fecha actual +- 15 días del archivo CSV.
+2020/01/05 11:31:24... Se genera la lista de horas de pronóstico.
