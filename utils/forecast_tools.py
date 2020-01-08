@@ -54,8 +54,9 @@ def promedios(listas):
             try:
                 valor = l[i]
             except:
+                contador += 1
                 continue
-            if str(valor) == 'nan' or valor == 999.0:
+            if str(valor).lower() == 'nan' or valor == 999.0:
                 contador += 1
                 continue
             suma += valor
@@ -77,7 +78,10 @@ def extraer_subset_valor(columna, valor, delta, data, subset):
     """
     sub_subset = subset[(subset[columna] >= (valor-delta)) & (subset[columna] <= (valor+delta))]
     listas_por_hora = extraer_datos_pronostico(data, sub_subset, columna)
-    #print(listas_por_hora)
+    # if columna == 'QNH':
+    #     # for lista in listas_por_hora:
+    #     #     print(lista)
+    #     print(listas_por_hora)
     if len(listas_por_hora) > 0:
         return promedios(listas_por_hora)
     else:

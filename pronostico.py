@@ -31,7 +31,7 @@ f_out = open('base/salidas.txt', 'a')
 # Se lleva a cabo la copia de la corrida anterior.
 #tools.copiar_corrida_anterior(f_in, f_out)
 try:
-    tools.copiar_corrida_anterior2(f_in, f_out)
+    tools.copiar_corrida_anterior(f_in, f_out)
     mensaje = "{}... Copia de la corrida anterior realizada satisfactoriamente."
     datetools.registro_de_actividad(log, mensaje=mensaje)
 except:
@@ -64,6 +64,8 @@ url = URL_BASE.format(hoy[0], str(hoy[1]).zfill(2), str(hoy[2]).zfill(2), str(ho
 
 # Se scrapea el metar más actual desde la página de Ogimet.com
 metar = scraptools.scraping_metar(log, url)
+#metar = '202001071700 MROC 071700Z 09020G30KT CAVOK 26/12 A3007 NOSIG'
+#metar = '202001061700 MROC 061700Z 08020G30KT CAVOK 29/14 A3005 NOSIG'
 if metar != '':
     print(metar)
 else:
@@ -149,9 +151,9 @@ datos.append(pronostico_MAG)
 # Pronóstico para la variable Ráfagas de viento
 #print("RAFAGAS ACTUALES: {}\nTIPO: {}".format(raf, type(raf)))
 if raf == '0':
-    pronostico_RAF = forecastools.pronostico("RAF", str(int(vel)+10), 4., data, subset)
+    pronostico_RAF = forecastools.pronostico("RAF", str(int(vel)+10), 5., data, subset)
 else:
-    pronostico_RAF = forecastools.pronostico("RAF", raf, 4., data, subset)
+    pronostico_RAF = forecastools.pronostico("RAF", raf, 5., data, subset)
 
 forecastools.verificar_pronostico_rafagas(pronostico_RAF, pronostico_MAG)
 datos.append(pronostico_RAF)
