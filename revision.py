@@ -41,8 +41,8 @@ def verificar_valor():
 				#acierto_fecha = patron_fecha.match(linea)
 				acierto = patron.match(elemento)
 				if acierto:
-					presion = float(elemento.replace('A', '')) / 100
-					if presion > 30.25 or presion < 29.80:
+					valor = float(elemento.replace('A', '')) / 100
+					if valor > 30.25 or valor < 29.80:
 						print(linea)
 						log.write(linea + '\n')
 					else:
