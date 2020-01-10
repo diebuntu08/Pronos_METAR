@@ -165,7 +165,7 @@ datos.append(pronostico_VIS)
 # Se crea el objeto de tipo file para escribir el pronóstico y se formatea el mismo para la salida
 # del pronóstico.
 salida = open("pronos.txt", "w")
-fecha_salida = datetools.fecha_para_registro()
+fecha_salida = datetools.fecha_salida()
 salida.write("ESTE MODELO CORRIÓ EL {}UTC.".format(fecha_salida).center(131, ' ') + '\n')
 salida.write('PROMEDIO HORARIO PARA LAS PRÓXIMAS 12 HORAS DE LAS VARIABLES DE INTERÉS EN EL AEROPUERTO INT. JUAN SANTAMARÍA (MROC).'.center(131, ' ') + '\n')
 salida.write('SALIDA DEL MODELO ESTADÍSTICO AEROData USANDO VALORES MEDIOS PARA EL QNH (inHg), TEMPERATURA (°C), DIRECCION Y VELOCIDAD DEL VIENTO.\n')
@@ -174,7 +174,7 @@ salida.write('-' * 132 + '\n\n')
 salida.write('-' * 132 + '\n\n')
 tabla = """\
        +--------------------------------------------------------------------------------------------------------------------+
-       | HORA UTC    QNH (inHg)    Temperatura (°C)    Direccion Viento (°)    Velocidad Viento (kt)    Ráfagas Viento (kt)  |
+       | HORA UTC    QNH (inHg)    Temperatura (°C)    Direccion Viento (°)    Velocidad Viento (kt)    Ráfagas Viento (kt) |
        |--------------------------------------------------------------------------------------------------------------------|
 {}
        +--------------------------------------------------------------------------------------------------------------------+\n

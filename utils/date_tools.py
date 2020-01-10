@@ -13,6 +13,18 @@ __status__ = "Developer"
 import pandas as pd
 from datetime import datetime, timedelta
 
+def fecha_salida():
+    """
+    Esta función retorna la fecha a la cual es ejecutada y devuelve esa fecha en tiempo UTC.
+    -----------------------
+    No recibe parámetros
+    -----------------------
+    Retorna una fecha con formato %Y/%m/%d %H:%M:%S.
+    Por ejemplo: 2019/08/01 22:45:25
+    """
+    hoy = datetime.utcnow()
+    return( datetime.strftime(hoy, '%Y/%m/%d %H:%M:%S') )
+
 def fecha_para_registro():
     """
     Esta función retorna la fecha a la cual es ejecutada y devuelve esa fecha.
