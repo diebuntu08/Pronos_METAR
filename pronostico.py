@@ -23,6 +23,8 @@ from utils.classes.metar_class import METAR
 
 log = open('log.txt', 'w')
 
+station = 'MROC'
+
 
 # Direcciones de los archivos para leer y guardar las corridas anteriores
 f_in = open('pronos.txt', 'r')
@@ -43,9 +45,9 @@ f_in.close()
 f_out.close()
 
 # Se lee el archivo metar_data.csv para generar el dataframe de pandas
-data = pd.read_csv('files/metar_data.csv', dtype=float)
+#data = pd.read_csv('files/metar_data.csv', dtype=float)
 try:
-    data = pd.read_csv('files/metar_data.csv', dtype=float)
+    data = pd.read_csv(f'files/{station}/metar_data.csv', dtype=float)
     #print(data.head(10))
     #print(data.shape)
     mensaje = "{}... Archivo 'metar_data.csv' leido correctamente."

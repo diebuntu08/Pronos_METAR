@@ -5,7 +5,10 @@ from datetime import datetime
 from calendar import monthrange
 from time import sleep
 import re
+import os
 import urllib.request
+
+station = 'MRLB'
 
 def convertir_a_string(valor):
 	if valor < 10:
@@ -57,19 +60,19 @@ hoy = datetime.today()
 anios = [x for x in range(2005, 2020)]
 meses = [y for y in range(1, 13)]
 for year in anios:
-	f3 = open('files/' + str(year) + '.txt', 'w')
+	f3 = open(f'files/{station}/' + str(year) + '.txt', 'w')
 	for month in meses:
 		fecha = datetime(year, month, 1, 0, 0, 0)
 		anio = fecha.year
-		print(anio)
+		print(f"Año: {anio}")
 		mes = convertir_a_string(fecha.month)
-		print(month)
+		print(f"Mes: {month}")
 		dia_ini = convertir_a_string(fecha.day)
 		month_range = monthrange(fecha.year, fecha.month)
 		dia_fin = convertir_a_string(month_range[1])
-		print(dia_fin)
+		print(f"Días de este mes: {dia_fin}")
 
-		direccion = 'http://ogimet.com/display_metars2.php?lugar=MROC&tipo=SA&ord=DIR&nil=SI&fmt=txt&ano=%i&mes=%s&day=%s&hora=00&anof=%i&mesf=%s&dayf=%s&horaf=23&minf=59&enviar=Ver'
+		direccion = f'http://ogimet.com/display_metars2.php?lugar={station}&tipo=SA&ord=DIR&nil=SI&fmt=txt&ano=%i&mes=%s&day=%s&hora=00&anof=%i&mesf=%s&dayf=%s&horaf=23&minf=59&enviar=Ver'
 		while True:
 			try:
 				url = direccion%(anio, mes, dia_ini, anio, mes, dia_fin)
@@ -87,7 +90,7 @@ for year in anios:
 
 		f2 = open('textow.txt', 'r')
 
-		formato = r'METAR/SPECI\sde\sMROC'
+		formato = r'METAR/SPECI\sde\s{}'.format(station)
 		patron = re.compile(formato)
 		encuentra_posicion(f2, patron)
 		linea_ant = 'texto'
@@ -97,8 +100,9 @@ for year in anios:
 			else:
 				linea_ant = acomoda_metares(f3, linea, linea_ant)
 		for x in range(300, 0, -1):
-			print(x)
+			print("Tiempo para request: {0:3d}".format(x))
 			sleep(1)
+			os.system("clear")
 		f2.close()
 	f3.close()
 
