@@ -6,7 +6,9 @@ import re
 
 hoy = datetime.utcnow()
 
-anios = [x for x in range(2019, hoy.year)]
+anios = [x for x in range(2005, hoy.year)]
+
+station = 'MRPV'
 
 FORMATOS = {
 			'viento': r'VRB\d{2}KT|VRB\d{2}G\d{2}KT|\d{5}KT|\d{5}G\d{2}KT',
@@ -20,13 +22,13 @@ FORMATOS = {
 			'tendencia': r'NOSIG|BECMG|TEMPO|RMK|REMARK|A\d{4}='
 }
 #patron_fecha = re.compile(fecha)
-patron = re.compile(FORMATOS['presion'])
+patron = re.compile(FORMATOS['viento'])
 
 log = open('log.txt', 'w')
 
 def verificar_valor():
 	for anio in anios:
-		f = open('files/{}.txt'.format(anio), 'r')
+		f = open(f'files/{station}/{anio}.txt', 'r')
 
 		for linea in f:
 			nil = linea.count('NIL')
@@ -53,7 +55,7 @@ def verificar_valor():
 
 def verificar_estado():
 	for anio in anios:
-		f = open('files/{}.txt'.format(anio), 'r')
+		f = open(f'files/{station}/{anio}.txt', 'r')
 
 		for linea in f:
 			nil = linea.count('NIL')
@@ -76,6 +78,6 @@ def verificar_estado():
 
 
 #verificar_valor()
-#verificar_estado()
+verificar_estado()
 
 log.close()
