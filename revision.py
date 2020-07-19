@@ -1,14 +1,18 @@
 #!/usr/bin/python
 #-*-coding: utf-8-*-
 
-from datetime import datetime
+from datetime import datetime, timedelta
 import re
+import time
 
 hoy = datetime.utcnow()
 
 anios = [x for x in range(2005, hoy.year)]
 
 station = 'MRPV'
+
+def files_dir(anio):
+    return f'files/{station}/{anio}.txt'
 
 FORMATOS = {
 			'viento': r'VRB\d{2}KT|VRB\d{2}G\d{2}KT|\d{5}KT|\d{5}G\d{2}KT',
@@ -28,7 +32,7 @@ log = open('log.txt', 'w')
 
 def verificar_valor():
 	for anio in anios:
-		f = open(f'files/{station}/{anio}.txt', 'r')
+		f = open(files_dir(anio), 'r')
 
 		for linea in f:
 			nil = linea.count('NIL')
@@ -55,7 +59,7 @@ def verificar_valor():
 
 def verificar_estado():
 	for anio in anios:
-		f = open(f'files/{station}/{anio}.txt', 'r')
+		f = open(files_dir(anio), 'r')
 
 		for linea in f:
 			nil = linea.count('NIL')
@@ -76,8 +80,35 @@ def verificar_estado():
 		log.write('##############################################################################\n')
 		f.close()
 
+def verificar_fechas():
+    for anio in anios:
+        f = open(files_dir(anio), 'r')
+        fecha_inicial = datetime.strptime(f'{anio}01010000', '%Y%m%d%H%M')
+        
+        for linea in f:
+            linea = re.sub(r'\s+', ' ', linea)
+            
+            metar = linea.split(' ')
+            fecha_metar = metar[0]
+            
+            if not fecha_metar.endswith('00'):
+                continue
+            
+            fecha_comparar = datetime.strftime(fecha_inicial, '%Y%m%d%H%M')
+            if fecha_metar != fecha_comparar:
+                # print(fecha_metar, fecha_comparar)
+                # time.sleep(2)
+                log.write(fecha_comparar + '\n')
+                fecha_inicial += timedelta(hours=2)
+            else:            
+            	fecha_inicial += timedelta(hours=1)
+        log.write('##############################################################################\n\n')
+        log.write('##############################################################################\n')
+        f.close()
+
 
 #verificar_valor()
-verificar_estado()
+#verificar_estado()
+verificar_fechas()
 
 log.close()
