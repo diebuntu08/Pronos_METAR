@@ -38,7 +38,7 @@ import re
 import os
 import urllib.request
 
-station = 'MRPV'
+station = 'MROC'
 
 def convertir_a_string(valor):
 	if valor < 10:
@@ -87,8 +87,8 @@ def acomoda_metares(archivo, linea, linea_ant):
 	return linea_ant
 
 hoy = datetime.today()
-anios = [x for x in range(2018, 2020)]
-meses = [y for y in range(5, 13)]
+anios = [x for x in range(2005, 2020)]
+meses = [y for y in range(3, 13)]
 for year in anios:
 	f3 = open(f'files/{station}/' + str(year) + 'test.txt', 'w')
 	for month in meses:

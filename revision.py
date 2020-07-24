@@ -9,7 +9,7 @@ hoy = datetime.utcnow()
 
 anios = [x for x in range(2005, hoy.year)]
 
-station = 'MROC'
+station = 'MRLB'
 
 def files_dir(anio):
     return f'files/{station}/{anio}.txt'
