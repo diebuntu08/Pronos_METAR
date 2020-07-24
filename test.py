@@ -1,3 +1,33 @@
+
+# import re
+
+# f = open("../files/metar_data.csv", "r")
+# f2 = open("test.txt", "w")
+
+# line = f.readline()
+# #formato = r'\d{4},\d{2},\d{2},\d{2},\d{2},\d{3},\d{2},(\d{1}|\d{2}),\d{4},*'
+# formato = r'9999F020'
+# patron = re.compile(formato)
+
+# for line in f:
+#     acierto = patron.search(line)
+#     if acierto:
+#         print(line)
+#         f2.write(line)
+#     else:
+#         continue
+
+# f.close()
+# f2.close()
+
+
+
+
+# f.close()
+
+# fecha = '200501030400'
+# print(fecha[-3:])
+
 #!/usr/bin/python
 #-*-coding: utf-8-*-
 
@@ -57,10 +87,10 @@ def acomoda_metares(archivo, linea, linea_ant):
 	return linea_ant
 
 hoy = datetime.today()
-anios = [x for x in range(2005, 2020)]
-meses = [y for y in range(1, 13)]
+anios = [x for x in range(2018, 2020)]
+meses = [y for y in range(5, 13)]
 for year in anios:
-	f3 = open(f'files/{station}/' + str(year) + '.txt', 'w')
+	f3 = open(f'files/{station}/' + str(year) + 'test.txt', 'w')
 	for month in meses:
 		fecha = datetime(year, month, 1, 0, 0, 0)
 		anio = fecha.year
@@ -99,7 +129,8 @@ for year in anios:
 				break
 			else:
 				linea_ant = acomoda_metares(f3, linea, linea_ant)
-		for x in range(300, 0, -1):
+		for x in range(5, 0, -1):
+		# for x in range(300, 0, -1):
 			print("Tiempo para request: {0:3d}".format(x))
 			sleep(1)
 			os.system("clear")

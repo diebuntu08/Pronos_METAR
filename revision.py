@@ -9,7 +9,7 @@ hoy = datetime.utcnow()
 
 anios = [x for x in range(2005, hoy.year)]
 
-station = 'MRPV'
+station = 'MROC'
 
 def files_dir(anio):
     return f'files/{station}/{anio}.txt'
@@ -95,13 +95,20 @@ def verificar_fechas():
                 continue
             
             fecha_comparar = datetime.strftime(fecha_inicial, '%Y%m%d%H%M')
-            if fecha_metar != fecha_comparar:
-                # print(fecha_metar, fecha_comparar)
-                # time.sleep(2)
-                log.write(fecha_comparar + '\n')
-                fecha_inicial += timedelta(hours=2)
-            else:            
-            	fecha_inicial += timedelta(hours=1)
+            # if fecha_metar != fecha_comparar:
+            #     # print(fecha_metar, fecha_comparar)
+            #     # time.sleep(2)
+            #     log.write(fecha_comparar + '\n')
+            #     fecha_inicial += timedelta(hours=2)
+            # else:            
+            # 	fecha_inicial += timedelta(hours=1)
+            while fecha_metar != fecha_comparar:
+                print(fecha_metar, fecha_comparar)
+                time.sleep(0.2)
+                fecha_inicial += timedelta(hours=1)
+                fecha_comparar = datetime.strftime(fecha_inicial, '%Y%m%d%H%M')
+                log.write(f"{fecha_comparar}\n")
+            fecha_inicial += timedelta(hours=1)
         log.write('##############################################################################\n\n')
         log.write('##############################################################################\n')
         f.close()
