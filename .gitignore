@@ -1,6 +1,11 @@
+# virtual env
+metarforecast
+metarforecast/*
+
+# logging file
+logging.log
+
 nuevos
 log.txt
 texto_web.txt
 pronos.txt
-test/
-test/*

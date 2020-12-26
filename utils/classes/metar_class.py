@@ -1,144 +1,86 @@
-#!/usr/bin/python3
-#-*-coding: utf-8-*-
+from metar import Metar
+from datetime import datetime
 
-__author__ = "Diego Antonio Garro Molina"
-__copyright__ = "Copyright 2019, Diego Garro e Instituto Meteorológico Nacional"
-__credits__ = "Diego Garro, Instituto Meteorologico Nacional"
-__license__ = "None"
-__version__ = "1.0.2"
-__maintaier__ = "Diego Garro Molina"
-__email__ = "dgarro@imn.ac.cr"
-__status__ = "Developer"
+oktas = {
+    "FEW": '2',
+    "SCT": '4',
+    "BKN": '7',
+    "OVC": '8'
+}
 
-import re
+convective = {
+    None: '0',
+    'TCU': '1',
+    'CB': '2'
+}
 
-# Clase para crear objetos que describen las características del METAR
-class METAR(object):
-    """
-    Esta clase crea un objeto METAR, evalúa cada entrada y extrae los datos de interés para
-    generar los cálculos del pronóstico.
-    """
-
-    pronostico_tendencia = ['NOSIG', 'NSIG', 'NSOIG', 'NOSGI', 'NOSG', 'NOSI',
-                            'BECMG', 'BCMG', 'BCEMG', 'BECGM', 'BECM', 'BECG',
-                            'TEMPO', 'TMPO', 'TMEPO', 'TEMOP', 'TEMP', 'TEMO']
-
-    def __init__(self, metar):
-        """
-        Constructor.
-        ------------------------
-        Recibe un único parámetro, el METAR como un string.
-        ------------------------
-        No retorna valores.
-        """
-        self.metar = metar.split(" ")
+class MetarClass(Metar.Metar):
     
-    def extraer_fecha(self):
-        """
-        Método: Extrae la fecha del METAR.
-        ------------------------
-        No recibe ningún parámetro.
-        ------------------------
-        Retorna la fecha del METAR.
-        """
-        return self.metar[0]
+    NaN = 'NaN'
     
-    def extraer_viento(self):
-        """
-        Método: Extrae el viento del METAR.
-        ------------------------
-        No recibe ningún parámetro.
-        ------------------------
-        Retorna el viento del METAR.
-        """
-        formato = r'\d{5}KT|\d{5}G\d{2}KT|VRB\d{2}KT|VRB\d{2}G\d{2}KT'
-        for entrada in self.metar:
-            acierto = re.match(formato, entrada)
-            if acierto:
-                dirc = entrada[0:3]
-                vel = entrada[3:5]
-                if 'G' in entrada:
-                    raf = entrada[6:8]
-                else:
-                    raf = '0'
-                return(dirc, vel, raf)
-        return('', '', '')
+    def __init__(self, date, metar_text):
+        super().__init__(metar_text, month=date.month, year=date.year)
+        self.cavok = 1
+        if metar_text.count('NIL') > 0:
+            self.time = date
+            self.cavok = MetarClass.NaN
     
-    def extraer_temperaturas(self):
-        """
-        Método: Extrae las temperaturas del METAR.
-        ------------------------
-        No recibe ningún parámetro.
-        ------------------------
-        Retorna las temperaturas del METAR.
-        """
-        formato = r'\d{2}/\d{2}|\d{2}///|///\d{2}|/////'
-        for entrada in self.metar:
-            acierto = re.match(formato, entrada)
-            if acierto:
-                if entrada == '/////':
-                    return('', '')
-                T = entrada[0:2]
-                Tr = entrada[3:]
-                return(T, Tr)
-        return('', '')
+    def get_wind_dir(self):
+        if self.wind_dir is None:
+            return MetarClass.NaN
+        return self.wind_dir.value()
     
-    def extraer_presion(self):
-        """
-        Método: Extrae la presión del METAR.
-        ------------------------
-        No recibe ningún parámetro.
-        ------------------------
-        Retorna la presión del METAR.
-        """
-        formato = r'A\d{4}|A////'
-        for entrada in self.metar:
-            acierto = re.match(formato, entrada)
-            if acierto:
-                return(entrada.replace('a', '').replace('A', ''))
-        return ''
+    def get_wind_speed(self):
+        if self.wind_speed is None:
+            return MetarClass.NaN
+        return self.wind_speed.value()
     
-    def extraer_visibilidad(self):
-        """
-        Método: Extrae la visibilidad reinante del METAR.
-        ------------------------
-        No recibe ningún parámetro.
-        ------------------------
-        Retorna la visibilidad del METAR.
-        """
-        formato = r'\d{4}'
-        formato_viento = r'\d{5}KT|\d{5}G\d{2}KT|VRB\d{2}KT|VRB\d{2}G\d{2}KT'
-        for entrada in self.metar[4:]:
-            acierto_viento = re.match(formato_viento, entrada)
-            if acierto_viento:
+    def get_wind_gust(self):
+        if self.wind_gust is None:
+            return MetarClass.NaN
+        return self.wind_gust.value()
+    
+    def get_vis(self):
+        if self.vis is None:
+            return MetarClass.NaN
+        if self.vis.value() < 10000.0:
+            self.cavok = 0
+        return self.vis.value()
+    
+    def get_weather(self, weather_code):
+        for weather in self.weather:
+            if weather_code in weather:
+                self.cavok = 0
+                return 1
+        return 0
+    
+    def get_cavok(self):
+        return self.cavok
+    
+    def get_sky_conditions(self):
+        sky_conditions = [
+            [MetarClass.NaN, MetarClass.NaN, MetarClass.NaN],
+            [MetarClass.NaN, MetarClass.NaN, MetarClass.NaN],
+            [MetarClass.NaN, MetarClass.NaN, MetarClass.NaN],
+            [MetarClass.NaN, MetarClass.NaN, MetarClass.NaN],
+        ]
+        for layer in self.sky:
+            if 'CLR' in layer:
+                break
+            if 'NSC' in layer:
+                sky_conditions[0][0] = 'NSC'
                 continue
-            if entrada in self.pronostico_tendencia:
-                break
-            acierto = re.match(formato, entrada)
-            if acierto:
-                return(entrada)
-        return '9999'
-    
-    def extraer_tiempo(self, tiempo='nubes'):
-        """
-        Método: Extrae las capas de nubes del METAR.
-        ------------------------
-        No recibe ningún parámetro:
-        * tiempo: string, el tiempo a extraer, puede ser 'nubes' o 't_presente'.
-        ------------------------
-        Retorna una lista con las capas de nubes extraidas del METAR.
-        """
-        if tiempo == 'nubes':
-            formato = r'(FEW|SCT|BKN|OVC)\d{3}(CB|TCU)*'
-        elif tiempo == 't_presente':
-            formato = r'(\+|-)*(RA|DZ|SHRA|TSRA|FG|BR|BCFG)'
-        else:
-            raise ValueError("Incorrect parameter! '{}' is not recognized".format(tiempo))
-        TIEMPO = ''
-        for entrada in self.metar[5:]:
-            if entrada in self.pronostico_tendencia:
-                break
-            acierto = re.match(formato, entrada)
-            if acierto:
-                TIEMPO += entrada + ' '
-        return TIEMPO.split(' ')[:-1]
+            if 'VV' in layer:
+                sky_conditions[0][0] = 'VV'
+                if layer[1] is not None:
+                    sky_conditions[0][1] = layer[1].value()
+                sky_conditions[0][0] = 'VV'
+                continue
+            index = self.sky.index(layer)
+            sky_conditions[index][0] = oktas[layer[0]]
+            sky_conditions[index][1] = layer[1].value()
+            sky_conditions[index][2] = convective[layer[2]]
+            if layer[1] is not None:
+                if layer[1].value() < 6000.0:
+                    self.cavok = 0
+        return sky_conditions
